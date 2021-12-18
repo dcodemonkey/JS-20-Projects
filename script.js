@@ -37,10 +37,16 @@ function displayPhotos() {
     //   img.setAttribute('alt', photo.alt_description);
     // }
     // img.setAttribute('title', photo.alt_description);
+    let altText = photo.alt_description;
+    if(!altText) {
+      altText = "A Beatiful image from Unplash... :)";
+    } else{
+      altText = photo.alt_description;
+    }
     setAttributes(img, {
       src: photo.urls.regular,
       alt: photo.alt_description,
-      title: photo.alt_description,
+      title: altText,
     });
     // Put <img> iside <a></a> element, then put both inside imageContainer Element
     item.appendChild(img);
