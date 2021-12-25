@@ -62,4 +62,4 @@ function processFormData(e) {
 }
 
 // Event Listener
-form.addEventListener('submit', processFormData)
+form.addEventListener('submit', processFormData);
