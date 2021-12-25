@@ -144,13 +144,10 @@ let fullscreen = false;
 
 // Toggle fullscreen
 function toggleFullScreen() {
-  if(!fullscreen) {
-    openFullscreen(player);
-  } else {
-    closeFullscreen();
-  }
+  !fullscreen ? openFullscreen(player) : closeFullscreen();
   fullscreen = !fullscreen;
 }
+
 
 // Event Listeners
 playBtn.addEventListener('click', togglePlay);
