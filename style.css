@@ -16,8 +16,8 @@ body {
 }
 
 .container {
-  width: 480px;
-  height: 630px;
+  width: 660px;
+  height: 700px;
   background-color: white;
   display: flex;
   flex-direction: column;
@@ -28,7 +28,7 @@ body {
 
 /* Form */
 form {
-  width: 90%;
+  width: 80%;
 }
 
 .form-group {
@@ -85,7 +85,7 @@ button:focus {
 .message-container {
   border: 1px solid black;
   border-radius: 5px;
-  width: 90%;
+  width: 80%;
   margin-top: 20px;
   display: flex;
   justify-content: center;
