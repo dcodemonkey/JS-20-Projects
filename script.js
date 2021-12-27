@@ -12,10 +12,23 @@ const apiUrl = `https://api.nasa.gov/planetary/apod?api_key=${apiKey}&count=${co
 let resultsArray = [];
 let favorites = {};
 
+// Scroll To Top, Remove Loader, Show Content
+function showContent(page) {
+  window.scrollTo({ top: 0, behavior: 'instant' });
+  loader.classList.add('hidden');
+  if (page === 'results') {
+    resultsNav.classList.remove('hidden');
+    favoritesNav.classList.add('hidden');
+  } else {
+    resultsNav.classList.add('hidden');
+    favoritesNav.classList.remove('hidden');
+  }
+}
+
 function createDOMNodes(page) {
+  // Load ResultsArray or Favorites
   const currentArray = page === 'results' ? resultsArray : Object.values(favorites);
-  console.log('Current Array', page, currentArray);
-  currentArray.forEach((result)=>{
+  currentArray.forEach((result) => {
     // Card Container
     const card = document.createElement('div');
     card.classList.add('card');
@@ -40,12 +53,12 @@ function createDOMNodes(page) {
     // Save Text
     const saveText = document.createElement('p');
     saveText.classList.add('clickable');
-    if(page === 'results') {
+    if (page === 'results') {
       saveText.textContent = 'Add To Favorites';
-      saveText.setAttribute('onclick', `saveFavourite('${result.url}')`);
+      saveText.setAttribute('onclick', `saveFavorite('${result.url}')`);
     } else {
-      saveText.textContent = 'Remove Favorites';
-      saveText.setAttribute('onclick', `removeFavourite('${result.url}')`);
+      saveText.textContent = 'Remove Favorite';
+      saveText.setAttribute('onclick', `removeFavorite('${result.url}')`);
     }
     // Card Text
     const cardText = document.createElement('p');
@@ -65,56 +78,56 @@ function createDOMNodes(page) {
     cardBody.append(cardTitle, saveText, cardText, footer);
     link.appendChild(image);
     card.append(link, cardBody);
-    // console.log(card);
     imagesContainer.appendChild(card);
   });
 }
 
 function updateDOM(page) {
   // Get Favorites from localStorage
-  if(localStorage.getItem('nasaFavorites')) {
+  if (localStorage.getItem('nasaFavorites')) {
     favorites = JSON.parse(localStorage.getItem('nasaFavorites'));
-    console.log('favourites from localStorege', favorites);
   }
+  // Reset DOM, Create DOM Nodes, Show Content
   imagesContainer.textContent = '';
   createDOMNodes(page);
+  showContent(page);
 }
 
 // Get 10 images from NASA API
 async function getNasaPictures() {
+  // Show Loader
+  loader.classList.remove('hidden');
   try {
     const response = await fetch(apiUrl);
     resultsArray = await response.json();
-    // console.log(resultsArray);
-    updateDOM('favorites');
+    updateDOM('results');
   } catch (error) {
     // Catch Error Here
-    // console.log(error);
   }
 }
 
-// Add result to favorites 
-function saveFavourite(itemUrl) {
-  // Loop through Results Array to select Favourites
+// Add result to Favorites
+function saveFavorite(itemUrl) {
+  // Loop through Results Array to select Favorite
   resultsArray.forEach((item) => {
-    if(item.url.includes(itemUrl) && !favorites[itemUrl]) {
+    if (item.url.includes(itemUrl) && !favorites[itemUrl]) {
       favorites[itemUrl] = item;
-      // console.log(JSON.stringify(favorites));
-      // Show save Confirmation for 2 seconds
+      // Show Save Confirmation for 2 seconds
       saveConfirmed.hidden = false;
-      setTimeout(()=>{
+      setTimeout(() => {
         saveConfirmed.hidden = true;
       }, 2000);
-      // Set Favorites in localStorege
+      // Set Favorites in localStorage
       localStorage.setItem('nasaFavorites', JSON.stringify(favorites));
     }
-  })
+  });
 }
 
-// Remove item form Favourites
-function removeFavourite(itemUrl) {
-  if(favorites[itemUrl]){
+// Remove item from Favorites
+function removeFavorite(itemUrl) {
+  if (favorites[itemUrl]) {
     delete favorites[itemUrl];
+    // Set Favorites in localStorage
     localStorage.setItem('nasaFavorites', JSON.stringify(favorites));
     updateDOM('favorites');
   }
@@ -122,4 +135,3 @@ function removeFavourite(itemUrl) {
 
 // On Load
 getNasaPictures();
-
